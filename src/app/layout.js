@@ -1,7 +1,7 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'FitPulse — Personal AI Fitness Coach',
+  title: 'PowerUp — Personal AI Fitness Coach',
   description: 'Smart workout planner with voice guidance, countdown timers, calorie tracking, and Spotify integration.',
   icons: { icon: '/favicon.ico' },
 };
