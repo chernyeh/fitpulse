@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, StopCircle, Play as PlayIcon } from 'lucide-react';
 
-export default function FitPulseV7() {
+export default function PowerUp() {
   const [stage, setStage] = useState('config');
   const [ageGroup, setAgeGroup] = useState('11-12');
   const [fitnessLevel, setFitnessLevel] = useState('intermediate');
