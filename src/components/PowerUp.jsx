@@ -74,29 +74,29 @@ export default function FitPulseV7() {
     return encouragingPhrases[Math.floor(Math.random() * encouragingPhrases.length)];
   };
 
-  // ALL EXERCISES WITH VERIFIED WORKING YOUTUBE VIDEOS (from reliable channels)
+  // ALL EXERCISES - Enhanced tips with modifications and alternatives
   const exercises = {
-    skipping: { caloriesPerMin: { light: 8, intermediate: 12, vigorous: 15 }, description: 'Skipping', duration: { light: 45, intermediate: 60, vigorous: 75 }, videoUrl: 'https://www.youtube.com/watch?v=3M9_x7mQ0N0', tips: 'Keep steady rhythm. Land softly on the balls of your feet.' },
-    plank: { caloriesPerMin: { light: 3, intermediate: 4.5, vigorous: 6 }, description: 'Plank Hold', duration: { light: 30, intermediate: 45, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=pSHjTRCQxIw', tips: 'Keep your body straight like a board. Engage your core!' },
-    sidePlank: { caloriesPerMin: { light: 3, intermediate: 4, vigorous: 5.5 }, description: 'Side Plank', duration: { light: 30, intermediate: 40, vigorous: 50 }, videoUrl: 'https://www.youtube.com/watch?v=TZN34-kKxcE', tips: 'Stack your feet and keep your hips high.' },
-    crunches: { caloriesPerMin: { light: 2, intermediate: 3, vigorous: 4 }, description: 'Crunches', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=OW0YlWE2CJc', tips: 'Hands behind your head. Lift your shoulders only.' },
-    bicycleCrunches: { caloriesPerMin: { light: 3, intermediate: 4.5, vigorous: 6 }, description: 'Bicycle Crunches', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=9ysH-ApnLc0', tips: 'Bring opposite elbow to knee. Alternate sides smoothly.' },
-    mountainClimbers: { caloriesPerMin: { light: 7, intermediate: 10, vigorous: 13 }, description: 'Mountain Climbers', duration: { light: 45, intermediate: 60, vigorous: 75 }, videoUrl: 'https://www.youtube.com/watch?v=nmwgirgblLw', tips: 'Start in plank. Bring knees to chest quickly. Keep hips level!' },
-    legRaises: { caloriesPerMin: { light: 3, intermediate: 4.5, vigorous: 6 }, description: 'Leg Raises', duration: { light: 30, intermediate: 40, vigorous: 50 }, videoUrl: 'https://www.youtube.com/watch?v=r8MXR03Dxso', tips: 'Lie flat. Lift legs slowly without bending knees.' },
-    balanceBoard: { caloriesPerMin: { light: 4, intermediate: 5, vigorous: 7 }, description: 'Balance Board', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=w23H-y2V8XM', tips: 'Focus on stability. Small adjustments help!' },
-    jumpingJacks: { caloriesPerMin: { light: 6, intermediate: 8, vigorous: 11 }, description: 'Jumping Jacks', duration: { light: 45, intermediate: 60, vigorous: 75 }, videoUrl: 'https://www.youtube.com/watch?v=c6QcKJNUzKo', tips: 'Keep a steady pace. Your feet apart, arms up!' },
-    marchingInPlace: { caloriesPerMin: { light: 3, intermediate: 4, vigorous: 5 }, description: 'Marching in Place', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=O-7_uNn4Jjc', tips: 'Lift your knees up high. Keep your arms moving.' },
-    walkingLunges: { caloriesPerMin: { light: 4, intermediate: 6, vigorous: 8 }, description: 'Walking Lunges', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=EV6zxvqB8B8', tips: 'Step forward and bend your back knee. Keep your torso upright.' },
-    highKnees: { caloriesPerMin: { light: 7, intermediate: 10, vigorous: 13 }, description: 'High Knees', duration: { light: 45, intermediate: 60, vigorous: 75 }, videoUrl: 'https://www.youtube.com/watch?v=o8x4gawLNVI', tips: 'Pump your knees up to hip height. Keep moving fast!' },
-    burpees: { caloriesPerMin: { light: 8, intermediate: 11, vigorous: 14 }, description: 'Burpees', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=JZQA8BlU2fg', tips: 'Go at your own pace. Quality over speed!' },
-    pushups: { caloriesPerMin: { light: 5, intermediate: 7, vigorous: 10 }, description: 'Push-ups', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=IODxDxX7oi4', tips: 'Lower yourself until chest nearly touches the ground. Keep elbows close!' },
-    squats: { caloriesPerMin: { light: 4, intermediate: 6, vigorous: 8 }, description: 'Squats', duration: { light: 45, intermediate: 60, vigorous: 75 }, videoUrl: 'https://www.youtube.com/watch?v=aclHkVaku9U', tips: 'Bend your knees and lower your hips. Keep your chest up!' },
-    jumpSquats: { caloriesPerMin: { light: 7, intermediate: 10, vigorous: 13 }, description: 'Jump Squats', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=GSO8jVMkfXA', tips: 'Squat down then jump explosively. Land softly.' },
-    gluteBridges: { caloriesPerMin: { light: 3, intermediate: 4, vigorous: 5.5 }, description: 'Glute Bridges', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=wPM8ic32ufQ', tips: 'Lie on your back. Push through heels. Squeeze glutes at top!' },
-    singleLegStand: { caloriesPerMin: { light: 2, intermediate: 3, vigorous: 4 }, description: 'Single Leg Stand', duration: { light: 30, intermediate: 40, vigorous: 50 }, videoUrl: 'https://www.youtube.com/watch?v=4lbkTEDvPks', tips: 'Stand on one leg. Keep your core tight. Switch legs halfway through.' },
-    downwardDog: { caloriesPerMin: { light: 2.5, intermediate: 3.5, vigorous: 5 }, description: 'Downward Dog', duration: { light: 35, intermediate: 45, vigorous: 55 }, videoUrl: 'https://www.youtube.com/watch?v=XkqZ8dYiVrI', tips: 'Hands and feet on ground. Push your hips up high.' },
-    armCircles: { caloriesPerMin: { light: 2, intermediate: 3, vigorous: 4 }, description: 'Arm Circles', duration: { light: 35, intermediate: 45, vigorous: 55 }, videoUrl: 'https://www.youtube.com/watch?v=oZLfNP0jOw4', tips: 'Small circles first, then larger. Both directions!' },
-    tricepDips: { caloriesPerMin: { light: 4, intermediate: 6, vigorous: 8 }, description: 'Tricep Dips', duration: { light: 40, intermediate: 50, vigorous: 60 }, videoUrl: 'https://www.youtube.com/watch?v=4qzUBwC9VlI', tips: 'Use a chair or bench. Lower your body slowly.' },
+    skipping: { caloriesPerMin: { light: 8, intermediate: 12, vigorous: 15 }, description: 'Skipping', duration: { light: 45, intermediate: 60, vigorous: 75 }, tips: 'Keep steady rhythm, land softly on the balls of your feet. Modification: Double unders (rope passes twice per jump) for extra intensity. Alternative: Jump for height instead of speed.' },
+    plank: { caloriesPerMin: { light: 3, intermediate: 4.5, vigorous: 6 }, description: 'Plank Hold', duration: { light: 30, intermediate: 45, vigorous: 60 }, tips: 'Keep your body straight like a board, engage your core! Modification: Plank with shoulder taps or arm lifts for added challenge. Alternative: Plank walks or moving planks.' },
+    sidePlank: { caloriesPerMin: { light: 3, intermediate: 4, vigorous: 5.5 }, description: 'Side Plank', duration: { light: 30, intermediate: 40, vigorous: 50 }, tips: 'Stack your feet and keep your hips high. Modification: Lift your top leg or arm while holding. Alternative: Side plank with rotation.' },
+    crunches: { caloriesPerMin: { light: 2, intermediate: 3, vigorous: 4 }, description: 'Crunches', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Hands behind your head, lift your shoulders only. Keep neck neutral. Modification: Add a pause at the top, or do weighted crunches. Alternative: Decline crunches.' },
+    bicycleCrunches: { caloriesPerMin: { light: 3, intermediate: 4.5, vigorous: 6 }, description: 'Bicycle Crunches', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Bring opposite elbow to knee, alternate sides smoothly. Keep a steady rhythm. Modification: Slow down for more time under tension. Alternative: Reverse bicycle crunches.' },
+    mountainClimbers: { caloriesPerMin: { light: 7, intermediate: 10, vigorous: 13 }, description: 'Mountain Climbers', duration: { light: 45, intermediate: 60, vigorous: 75 }, tips: 'Start in plank, bring knees to chest quickly, keep hips level! Modification: Cross-body mountain climbers for added core work. Alternative: Slow, controlled mountain climbers.' },
+    legRaises: { caloriesPerMin: { light: 3, intermediate: 4.5, vigorous: 6 }, description: 'Leg Raises', duration: { light: 30, intermediate: 40, vigorous: 50 }, tips: 'Lie flat, lift legs slowly without bending knees. Keep lower back pressed to floor. Modification: Add pauses or do single-leg raises. Alternative: Hanging leg raises from a bar.' },
+    balanceBoard: { caloriesPerMin: { light: 4, intermediate: 5, vigorous: 7 }, description: 'Balance Board', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Focus on stability, small adjustments help! Modification: Close your eyes or add arm movements. Alternative: Single-leg balancing or bosu ball work.' },
+    jumpingJacks: { caloriesPerMin: { light: 6, intermediate: 8, vigorous: 11 }, description: 'Jumping Jacks', duration: { light: 45, intermediate: 60, vigorous: 75 }, tips: 'Keep a steady pace, feet apart, arms up! Land softly to protect joints. Modification: Fast, explosive jumping jacks. Alternative: Step-touch jacks or side-to-side jacks.' },
+    marchingInPlace: { caloriesPerMin: { light: 3, intermediate: 4, vigorous: 5 }, description: 'Marching in Place', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Lift your knees up high, keep your arms moving in sync. Modification: Add arm variations or lift knees even higher. Alternative: High-intensity sprinting in place.' },
+    walkingLunges: { caloriesPerMin: { light: 4, intermediate: 6, vigorous: 8 }, description: 'Walking Lunges', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Step forward and bend your back knee, keep your torso upright. Modification: Add a jump between lunges or hold weights. Alternative: Reverse walking lunges or stationary lunges.' },
+    highKnees: { caloriesPerMin: { light: 7, intermediate: 10, vigorous: 13 }, description: 'High Knees', duration: { light: 45, intermediate: 60, vigorous: 75 }, tips: 'Pump your knees up to hip height, keep moving fast! Drive from your hips. Modification: Sprint-style high knees or add arm drive. Alternative: Bounding or skipping with high knees.' },
+    burpees: { caloriesPerMin: { light: 8, intermediate: 11, vigorous: 14 }, description: 'Burpees', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Go at your own pace, quality over speed! Modification: Add a push-up or jump at the top for intensity. Alternative: Modified burpees without the jump.' },
+    pushups: { caloriesPerMin: { light: 5, intermediate: 7, vigorous: 10 }, description: 'Push-ups', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Lower yourself until chest nearly touches ground, keep elbows close! Modification: Diamond push-ups or decline push-ups. Alternative: Knee push-ups or wall push-ups.' },
+    squats: { caloriesPerMin: { light: 4, intermediate: 6, vigorous: 8 }, description: 'Squats', duration: { light: 45, intermediate: 60, vigorous: 75 }, tips: 'Bend your knees and lower your hips, keep your chest up! Modification: Jump squats or pistol squats for challenge. Alternative: Wall sits or sumo squats.' },
+    jumpSquats: { caloriesPerMin: { light: 7, intermediate: 10, vigorous: 13 }, description: 'Jump Squats', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Squat down then jump explosively, land softly. Modification: Add a pause at the bottom. Alternative: Pogo jumps or tuck jumps.' },
+    gluteBridges: { caloriesPerMin: { light: 3, intermediate: 4, vigorous: 5.5 }, description: 'Glute Bridges', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Lie on your back, push through heels, squeeze glutes at top! Modification: Single-leg bridges or add weights. Alternative: Hip thrusts or step-ups.' },
+    singleLegStand: { caloriesPerMin: { light: 2, intermediate: 3, vigorous: 4 }, description: 'Single Leg Stand', duration: { light: 30, intermediate: 40, vigorous: 50 }, tips: 'Stand on one leg, keep your core tight, switch legs halfway. Focus on a point ahead. Modification: Close your eyes or add arm movements. Alternative: Flamingo pose or pistol squat progressions.' },
+    downwardDog: { caloriesPerMin: { light: 2.5, intermediate: 3.5, vigorous: 5 }, description: 'Downward Dog', duration: { light: 35, intermediate: 45, vigorous: 55 }, tips: 'Hands and feet on ground, push your hips up high. Breathe deeply. Modification: Add leg lifts or moves. Alternative: Dolphin pose or upward dog.' },
+    armCircles: { caloriesPerMin: { light: 2, intermediate: 3, vigorous: 4 }, description: 'Arm Circles', duration: { light: 35, intermediate: 45, vigorous: 55 }, tips: 'Small circles first, then larger, both directions! Keep shoulders relaxed. Modification: Add weight or increase speed. Alternative: Arm cross-overs or shoulder rolls.' },
+    tricepDips: { caloriesPerMin: { light: 4, intermediate: 6, vigorous: 8 }, description: 'Tricep Dips', duration: { light: 40, intermediate: 50, vigorous: 60 }, tips: 'Use a chair or bench, lower your body slowly, keep elbows close. Modification: Feet on elevated surface or add weight. Alternative: Bench dips or resistance band dips.' },
   };
 
   const goals = {
@@ -207,7 +207,7 @@ export default function FitPulseV7() {
         background: colors.light,
       }}>
         <div style={{ marginBottom: '50px' }}>
-          <h1 style={{ color: colors.primary, marginBottom: '10px', fontSize: '3.2em', fontFamily: '"Lora", Georgia, serif', fontWeight: '700', letterSpacing: '1px' }}>FitPulse</h1>
+          <h1 style={{ color: colors.primary, marginBottom: '10px', fontSize: '3.2em', fontFamily: '"Lora", Georgia, serif', fontWeight: '700', letterSpacing: '1px' }}>PowerUp</h1>
           <p style={{ color: colors.textSecondary, fontSize: '1.2em', fontStyle: 'italic', fontWeight: '500' }}>Your Personal Fitness Coach</p>
         </div>
 
@@ -327,17 +327,20 @@ export default function FitPulseV7() {
     const isTransition = current?.type === 'transition';
 
     return (
-      <div style={{ padding: '40px', fontFamily: '"Lora", Georgia, serif', minHeight: '100vh', background: colors.light, textAlign: 'center' }}>
-        <h2 style={{ color: colors.primary, marginBottom: '30px', fontFamily: '"Lora", Georgia, serif', fontSize: '2.2em', fontWeight: '400' }}>
-          {countdown > 0 ? 'Get Ready!' : isTransition ? '✨ Quick Break' : isRest ? '😤 Rest Time' : `💪 ${exerciseData?.description}`}
-        </h2>
-        <div style={{ fontSize: countdown > 0 ? '6em' : '5em', color: colors.primary, marginBottom: '30px', fontWeight: 'bold', fontFamily: 'monospace' }}>
-          {countdown > 0 ? countdown : `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`}
+      <div style={{ padding: '40px', fontFamily: '"Lora", Georgia, serif', minHeight: '100vh', background: colors.light, textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <div>
+          <h2 style={{ color: colors.primary, marginBottom: '20px', fontFamily: '"Lora", Georgia, serif', fontSize: '2.2em', fontWeight: '400' }}>
+            {countdown > 0 ? 'Get Ready!' : isTransition ? '✨ Quick Break' : isRest ? '😤 Rest Time' : `💪 ${exerciseData?.description}`}
+          </h2>
+          <div style={{ fontSize: countdown > 0 ? '12em' : '8em', color: colors.primary, marginBottom: '20px', fontWeight: 'bold', fontFamily: 'monospace', lineHeight: '1' }}>
+            {countdown > 0 ? countdown : `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`}
+          </div>
+          {countdown > 0 && (
+            <p style={{ color: colors.text, fontSize: '1.2em', marginBottom: '20px', fontStyle: 'italic' }}>Starting your workout soon...</p>
+          )}
         </div>
-        {countdown > 0 && (
-          <p style={{ color: colors.text, fontSize: '1.2em', marginBottom: '30px', fontStyle: 'italic' }}>Starting your workout soon...</p>
-        )}
-        <div style={{ marginBottom: '30px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
           {!isRunning ? (
             <button onClick={() => { setIsRunning(true); setCountdown(0); setIsPaused(false); if (isTransition) { speak('Take your time, get ready'); } else if (isRest) { speak('Rest time. Breathe and relax'); } else { speak(`Starting ${exerciseData?.description}. ${getRandomEncouragement()}`); } }} style={{ padding: '12px 24px', background: '#059669', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1em', fontFamily: '"Lora", Georgia, serif' }}>
               <PlayIcon size={20} style={{ display: 'inline', marginRight: '8px' }} /> Play
@@ -353,26 +356,26 @@ export default function FitPulseV7() {
             </>
           )}
         </div>
-        <p style={{ color: colors.text, marginBottom: '30px', fontSize: '1.1em' }}>
+
+        <p style={{ color: colors.text, marginBottom: '15px', fontSize: '1em' }}>
           Exercise {currentIndex + 1} of {workoutPlan.length}
         </p>
+
         {exerciseData && (
-          <div style={{ background: 'white', padding: '25px', borderRadius: '8px', marginBottom: '20px', border: `1px solid ${colors.border}` }}>
-            <p style={{ color: colors.text, fontSize: '1.1em', marginBottom: '15px' }}>💡 {exerciseData.tips}</p>
-            {exerciseData.videoUrl && (
-              <a href={exerciseData.videoUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', color: colors.primary, textDecoration: 'none', fontSize: '0.9em', padding: '8px 16px', border: `1px solid ${colors.primary}`, borderRadius: '4px', transition: 'all 0.2s ease', cursor: 'pointer' }} onMouseEnter={(e) => { e.target.style.background = colors.primary; e.target.style.color = 'white'; }} onMouseLeave={(e) => { e.target.style.background = 'transparent'; e.target.style.color = colors.primary; }}>
-                📹 Watch Video
-              </a>
-            )}
+          <div style={{ background: 'white', padding: '20px', borderRadius: '8px', marginBottom: '15px', border: `1px solid ${colors.border}` }}>
+            <p style={{ color: colors.text, fontSize: '1em', marginBottom: '0', lineHeight: '1.4' }}>💡 {exerciseData.tips}</p>
           </div>
         )}
-        <div style={{ background: 'white', padding: '20px', borderRadius: '8px', maxHeight: '200px', overflowY: 'auto', border: `1px solid ${colors.border}` }}>
-          <h4 style={{ color: colors.primary, marginBottom: '15px' }}>📋 Exercises</h4>
-          {workoutPlan.map((item, idx) => (
-            <div key={idx} style={{ padding: '8px', background: idx === currentIndex ? colors.primary : 'transparent', color: idx === currentIndex ? 'white' : colors.text, opacity: idx < currentIndex ? 0.5 : 1, borderRadius: '4px', marginBottom: '4px', fontSize: '0.9em' }}>
-              {item.type === 'exercise' ? `💪 ${exercises[item.exercise].description}` : item.type === 'rest' ? '😤 Rest' : '✨ Quick Break'}
-            </div>
-          ))}
+
+        <div style={{ background: 'white', padding: '15px', borderRadius: '8px', border: `1px solid ${colors.border}`, maxHeight: '150px', overflowY: 'auto' }}>
+          <h4 style={{ color: colors.primary, marginBottom: '10px', fontSize: '0.9em' }}>📋 Exercises</h4>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '6px' }}>
+            {workoutPlan.map((item, idx) => (
+              <div key={idx} style={{ padding: '6px', background: idx === currentIndex ? colors.primary : 'transparent', color: idx === currentIndex ? 'white' : colors.text, opacity: idx < currentIndex ? 0.5 : 1, borderRadius: '4px', fontSize: '0.75em', textAlign: 'center', border: idx === currentIndex ? 'none' : `1px solid ${colors.border}` }}>
+                {item.type === 'exercise' ? `${exercises[item.exercise].description}` : item.type === 'rest' ? 'Rest' : 'Break'}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
