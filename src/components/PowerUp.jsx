@@ -297,24 +297,37 @@ export default function PowerUp() {
   // PREP SCREEN
   if (stage === 'prep') {
     return (
-      <div style={{ padding: '40px', fontFamily: '"Lora", Georgia, serif', maxWidth: '700px', margin: '0 auto', minHeight: '100vh', background: colors.light }}>
-        <h2 style={{ color: colors.primary, marginBottom: '30px', fontSize: '2em' }}>Your Workout Plan</h2>
-        <div style={{ background: 'white', padding: '20px', borderRadius: '8px', marginBottom: '30px', maxHeight: '400px', overflowY: 'auto', border: `1px solid ${colors.border}` }}>
-          {workoutPlan.map((item, idx) => (
-            <div key={idx} style={{ padding: '12px', borderBottom: `1px solid ${colors.border}`, color: item.type === 'rest' ? colors.textSecondary : colors.text, fontWeight: item.type === 'exercise' ? 'bold' : 'normal' }}>
-              {item.type === 'exercise' ? (
-                <span>💪 {exercises[item.exercise].description} ({item.duration}s) - Set {item.set}/{item.totalSets}</span>
-              ) : item.type === 'transition' ? (
-                <span>✨ Quick Break ({item.duration}s)</span>
-              ) : (
-                <span>😤 Rest ({item.duration}s)</span>
-              )}
-            </div>
-          ))}
-        </div>
-        <button onClick={() => startWorkout()} style={{ width: '100%', padding: '14px', fontSize: '1.1em', background: colors.primary, color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontFamily: '"Lora", Georgia, serif' }}>
+      <div style={{ padding: '40px', fontFamily: '"Lora", Georgia, serif', maxWidth: '700px', margin: '0 auto', minHeight: '100vh', background: colors.light, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+        <h2 style={{ color: colors.primary, marginBottom: '20px', fontSize: '2em' }}>Your Workout Plan</h2>
+        
+        <button onClick={() => startWorkout()} style={{ width: '100%', padding: '14px', fontSize: '1.1em', background: colors.primary, color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontFamily: '"Lora", Georgia, serif', marginBottom: '25px' }}>
           🚀 Start Workout
         </button>
+
+        <div style={{ background: 'white', padding: '15px', borderRadius: '8px', border: `1px solid ${colors.border}` }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '8px' }}>
+            {workoutPlan.map((item, idx) => (
+              <div key={idx} style={{ padding: '10px', background: colors.light, border: `1px solid ${colors.border}`, borderRadius: '6px', color: colors.text, fontWeight: item.type === 'exercise' ? 'bold' : 'normal', fontSize: '0.85em', textAlign: 'center', lineHeight: '1.3' }}>
+                {item.type === 'exercise' ? (
+                  <>
+                    <div>{exercises[item.exercise].description}</div>
+                    <div style={{ fontSize: '0.75em', opacity: 0.7, marginTop: '4px' }}>{item.duration}s</div>
+                  </>
+                ) : item.type === 'rest' ? (
+                  <>
+                    <div>Rest</div>
+                    <div style={{ fontSize: '0.75em', opacity: 0.7, marginTop: '4px' }}>{item.duration}s</div>
+                  </>
+                ) : (
+                  <>
+                    <div>Break</div>
+                    <div style={{ fontSize: '0.75em', opacity: 0.7, marginTop: '4px' }}>{item.duration}s</div>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
