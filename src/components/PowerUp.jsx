@@ -332,7 +332,7 @@ export default function PowerUp() {
           <h2 style={{ color: colors.primary, marginBottom: '20px', fontFamily: '"Lora", Georgia, serif', fontSize: '2.2em', fontWeight: '400' }}>
             {countdown > 0 ? 'Get Ready!' : isTransition ? '✨ Quick Break' : isRest ? '😤 Rest Time' : `💪 ${exerciseData?.description}`}
           </h2>
-          <div style={{ fontSize: countdown > 0 ? '12em' : '8em', color: colors.primary, marginBottom: '20px', fontWeight: 'bold', fontFamily: 'monospace', lineHeight: '1' }}>
+          <div style={{ fontSize: countdown > 0 ? '24em' : '16em', color: colors.primary, marginBottom: '20px', fontWeight: 'bold', fontFamily: 'monospace', lineHeight: '1' }}>
             {countdown > 0 ? countdown : `${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`}
           </div>
           {countdown > 0 && (
@@ -363,16 +363,38 @@ export default function PowerUp() {
 
         {exerciseData && (
           <div style={{ background: 'white', padding: '20px', borderRadius: '8px', marginBottom: '15px', border: `1px solid ${colors.border}` }}>
-            <p style={{ color: colors.text, fontSize: '1em', marginBottom: '0', lineHeight: '1.4' }}>💡 {exerciseData.tips}</p>
+            {exerciseData.tips.split('. ').map((sentence, idx) => {
+              const isMod = sentence.toLowerCase().includes('modification') || sentence.toLowerCase().includes('alternative');
+              return (
+                <p key={idx} style={{ color: colors.text, fontSize: isMod ? '0.9em' : '1em', marginBottom: idx === exerciseData.tips.split('. ').length - 1 ? '0' : '10px', lineHeight: '1.5', fontWeight: isMod ? '500' : 'normal' }}>
+                  {isMod ? '→ ' : '💡 '}{sentence}{sentence.endsWith('.') ? '' : '.'}
+                </p>
+              );
+            })}
           </div>
         )}
 
         <div style={{ background: 'white', padding: '15px', borderRadius: '8px', border: `1px solid ${colors.border}`, maxHeight: '150px', overflowY: 'auto' }}>
           <h4 style={{ color: colors.primary, marginBottom: '10px', fontSize: '0.9em' }}>📋 Exercises</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '6px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '6px' }}>
             {workoutPlan.map((item, idx) => (
-              <div key={idx} style={{ padding: '6px', background: idx === currentIndex ? colors.primary : 'transparent', color: idx === currentIndex ? 'white' : colors.text, opacity: idx < currentIndex ? 0.5 : 1, borderRadius: '4px', fontSize: '0.75em', textAlign: 'center', border: idx === currentIndex ? 'none' : `1px solid ${colors.border}` }}>
-                {item.type === 'exercise' ? `${exercises[item.exercise].description}` : item.type === 'rest' ? 'Rest' : 'Break'}
+              <div key={idx} style={{ padding: '6px', background: idx === currentIndex ? colors.primary : 'transparent', color: idx === currentIndex ? 'white' : colors.text, opacity: idx < currentIndex ? 0.5 : 1, borderRadius: '4px', fontSize: '0.7em', textAlign: 'center', border: idx === currentIndex ? 'none' : `1px solid ${colors.border}`, lineHeight: '1.3' }}>
+                {item.type === 'exercise' ? (
+                  <>
+                    <div>{exercises[item.exercise].description}</div>
+                    <div style={{ fontSize: '0.65em', opacity: 0.8 }}>{item.duration}s</div>
+                  </>
+                ) : item.type === 'rest' ? (
+                  <>
+                    <div>Rest</div>
+                    <div style={{ fontSize: '0.65em', opacity: 0.8 }}>{item.duration}s</div>
+                  </>
+                ) : (
+                  <>
+                    <div>Break</div>
+                    <div style={{ fontSize: '0.65em', opacity: 0.8 }}>{item.duration}s</div>
+                  </>
+                )}
               </div>
             ))}
           </div>
