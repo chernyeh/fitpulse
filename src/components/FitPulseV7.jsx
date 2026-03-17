@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX, RotateCcw, ChevronRight, Award, History, Music, Video, Settings, BarChart3, Trash2, Download, Zap, Heart, Flame, Target, Clock, Dumbbell, Square } from 'lucide-react';
 
