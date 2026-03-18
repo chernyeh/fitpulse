@@ -149,16 +149,6 @@ export default function PowerUp() {
     'Don\'t give up! You\'re so close!',
   ];
 
-  // CALORIE CONTEXT - What does X calories mean?
-  const getCalorieContext = (calories) => {
-    if (calories < 30) return `~${Math.round(calories / 3.5)} almonds`;
-    if (calories < 60) return `~${Math.round(calories / 25)} apple`;
-    if (calories < 100) return `~${Math.round(calories / 50)} banana`;
-    if (calories < 150) return `~${Math.round(calories / 70)} slice of bread`;
-    if (calories < 250) return `~${Math.round(calories / 150)} small snack`;
-    return `~${Math.round(calories / 250)} meal`;
-  };
-
   // CALORIE BURN CALCULATOR
   // Based on age, fitness level, and exercise type
   const getCaloriesBurned = (exerciseKey, durationSeconds, ageGroup, fitnessLvl) => {
