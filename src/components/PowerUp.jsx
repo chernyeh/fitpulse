@@ -836,8 +836,6 @@ export default function PowerUp() {
           ))}
         </div>
       </div>
-
-    </div>
     );
   }
 
