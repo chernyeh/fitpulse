@@ -128,14 +128,14 @@ export default function PowerUp() {
     return () => clearInterval(interval);
   }, [countdown]);
 
-  // NEW: Speak the countdown number when it changes
+  // Speak countdown numbers using instant browser voice (for sync)
   useEffect(() => {
     if (stage === 'workout' && countdown > 0 && countdown <= 5) {
-      speak(countdown.toString());
+      speakWithBrowserVoice(countdown.toString());
     } else if (stage === 'workout' && countdown === 0 && isRunning) {
       // Only say "Go!" once when transitioning from 1 to 0
       if (timeLeft === workoutPlan[0]?.duration) {
-        speak('Go!');
+        speakWithBrowserVoice('Go!');
       }
     }
   }, [countdown, stage]);
@@ -221,6 +221,29 @@ export default function PowerUp() {
       };
     }
   }, []);
+
+  const speakWithBrowserVoice = (text, speed = 1.0) => {
+    // Instant browser voice - used for countdown to stay in sync
+    if (synth.current) {
+      synth.current.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = speed;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
+      const voices = synth.current.getVoices();
+      if (voices.length > 0) {
+        const googleVoice = voices.find(v => v.name.includes('Google US English')) ||
+                           voices.find(v => v.name.includes('Google UK English Female')) ||
+                           voices[0];
+        if (googleVoice) {
+          utterance.voice = googleVoice;
+        }
+      }
+      
+      synth.current.speak(utterance);
+    }
+  };
 
   const speak = async (text, speed = 1.0) => {
     const apiKey = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
