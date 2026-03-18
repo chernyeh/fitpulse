@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, StopCircle, Play as PlayIcon } from 'lucide-react';
 
 const fontStyle = {
-  fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  fontFamily: '"Lora", Georgia, serif',
   letterSpacing: '0.3px',
 };
 
@@ -147,14 +147,14 @@ export default function PowerUp() {
   const getCalorieContext = (calories) => {
     if (calories < 30) return '~1 apple';
     if (calories < 80) return '1 ice lolly';
-    if (calories < 120) return '1 scoop ice cream';
+    if (calories < 120) return '1 scoop of ice cream';
     if (calories < 160) return '1 chocolate bar';
-    if (calories < 200) return '1 slice shortcake';
+    if (calories < 200) return '1 slice of shortcake';
     if (calories < 280) return '1 muffin';
-    if (calories < 350) return '2 scoops ice cream';
-    if (calories < 450) return '1 slice cake';
+    if (calories < 350) return '2 scoops of ice cream';
+    if (calories < 450) return '1 slice of cake';
     if (calories < 600) return '1 cupcake';
-    return `${Math.round(calories / 250)} slices cake`;
+    return `${Math.round(calories / 250)} slices of cake`;
   };
 
   const getCaloriesBurned = (exerciseKey, durationSeconds, ageLvl, fitLvl) => {
@@ -177,6 +177,14 @@ export default function PowerUp() {
   const calculateSkipsCalories = (skips) => {
     const durationSeconds = calculateSkippingDuration(skips);
     return getCaloriesBurned('skipping', durationSeconds, ageGroup, fitnessLevel);
+  };
+
+  const estimateWorkoutCaloriesForModal = () => {
+    // Estimate total workout calories based on workout duration and intensity
+    // For Matt's preset: mostly cardio + core + balance
+    const baseCaloriesPerMinute = fitnessLevel === 'light' ? 4 : fitnessLevel === 'intermediate' ? 5.5 : 7;
+    const estimatedCalories = Math.round(duration * baseCaloriesPerMinute);
+    return estimatedCalories;
   };
 
   const calculateWorkoutCalories = () => {
@@ -419,8 +427,8 @@ export default function PowerUp() {
 
               <div style={{ background: colors.light, padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
                 <div style={{ color: colors.text, fontSize: '0.9em', marginBottom: '8px', fontWeight: '500' }}>Total Workout Estimate:</div>
-                <div style={{ color: colors.primary, fontSize: '1.6em', fontWeight: '600', marginBottom: '6px' }}>~260 cal</div>
-                <div style={{ color: colors.text, fontSize: '0.9em' }}>≈ 1 slice shortcake</div>
+                <div style={{ color: colors.primary, fontSize: '1.6em', fontWeight: '600', marginBottom: '6px' }}>~{estimateWorkoutCaloriesForModal()}</div>
+                <div style={{ color: colors.text, fontSize: '0.9em' }}>≈ {getCalorieContext(estimateWorkoutCaloriesForModal())}</div>
               </div>
               
               <div style={{ display: 'flex', gap: '10px' }}>
