@@ -525,38 +525,46 @@ export default function PowerUp() {
   // CONFIG SCREEN
   if (stage === 'config') {
     return (
-      <div style={{ marginBottom: '50px' }}>
-        <h1 style={{ color: colors.primary, marginBottom: '10px', fontSize: '3.2em', fontFamily: '"Lora", Georgia, serif', fontWeight: '700', letterSpacing: '1px' }}>PowerUp</h1>
-        <p style={{ color: colors.textSecondary, fontSize: '1.2em', fontStyle: 'italic', fontWeight: '500', marginBottom: '40px' }}>Your Personal Fitness Coach</p>
+      <div style={{
+        padding: '50px 40px',
+        fontFamily: '"Lora", Georgia, serif',
+        maxWidth: '900px',
+        margin: '0 auto',
+        minHeight: '100vh',
+        background: colors.light,
+      }}>
+        <div style={{ marginBottom: '50px' }}>
+          <h1 style={{ color: colors.primary, marginBottom: '10px', fontSize: '3.2em', fontFamily: '"Lora", Georgia, serif', fontWeight: '700', letterSpacing: '1px' }}>PowerUp</h1>
+          <p style={{ color: colors.textSecondary, fontSize: '1.2em', fontStyle: 'italic', fontWeight: '500', marginBottom: '40px' }}>Your Personal Fitness Coach</p>
 
-        {/* DURATION SELECTION - TOP LEVEL */}
-        <div style={{ marginBottom: '40px', padding: '25px', background: 'white', borderRadius: '12px', border: `2px solid ${colors.primary}` }}>
-          <h3 style={{ color: colors.primary, marginBottom: '20px', fontSize: '1.3em', fontWeight: '500' }}>⏱️ Workout Duration</h3>
-          <p style={{ color: colors.text, marginBottom: '15px', fontSize: '0.95em' }}>Select how long you want to work out (applies to all workouts)</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '10px' }}>
-            {[15, 20, 25, 30, 35, 40].map(mins => (
-              <button
-                key={mins}
-                onClick={() => setDuration(mins)}
-                style={{
-                  padding: '14px',
-                  background: duration === mins ? colors.primary : 'white',
-                  color: duration === mins ? 'white' : colors.text,
-                  border: `2px solid ${duration === mins ? colors.primary : colors.border}`,
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontWeight: duration === mins ? 'bold' : 'normal',
-                  fontFamily: '"Lora", Georgia, serif',
-                  fontSize: '1em',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {mins}m
-              </button>
-            ))}
+          {/* DURATION SELECTION - TOP LEVEL */}
+          <div style={{ marginBottom: '40px', padding: '25px', background: 'white', borderRadius: '12px', border: `2px solid ${colors.primary}` }}>
+            <h3 style={{ color: colors.primary, marginBottom: '20px', fontSize: '1.3em', fontWeight: '500' }}>⏱️ Workout Duration</h3>
+            <p style={{ color: colors.text, marginBottom: '15px', fontSize: '0.95em' }}>Select how long you want to work out (applies to all workouts)</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '10px' }}>
+              {[15, 20, 25, 30, 35, 40].map(mins => (
+                <button
+                  key={mins}
+                  onClick={() => setDuration(mins)}
+                  style={{
+                    padding: '14px',
+                    background: duration === mins ? colors.primary : 'white',
+                    color: duration === mins ? 'white' : colors.text,
+                    border: `2px solid ${duration === mins ? colors.primary : colors.border}`,
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: duration === mins ? 'bold' : 'normal',
+                    fontFamily: '"Lora", Georgia, serif',
+                    fontSize: '1em',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {mins}m
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
 
         {/* PRESETS */}
         <div style={{ marginBottom: '50px' }}>
