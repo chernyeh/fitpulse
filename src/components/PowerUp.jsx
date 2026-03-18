@@ -222,45 +222,81 @@ export default function PowerUp() {
     }
   }, []);
 
-  const selectAndSpeak = (voices, utterance) => {
-    let selectedVoice = null;
-    
-    // Priority: Google US English, then Google UK English Female
-    selectedVoice = voices.find(v => v.name.includes('Google US English')) ||
-                    voices.find(v => v.name.includes('Google UK English Female')) ||
-                    voices[0]; // Fallback to first available
-    
-    console.log('Selected voice:', selectedVoice?.name);
-    
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
-    
-    synth.current.speak(utterance);
-  };
+  const speak = async (text, speed = 1.0) => {
+    const apiKey = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY;
 
-  const speak = (text, speed = 1.0) => {
-    if (!synth.current) return;
-    
-    synth.current.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = speed;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-    
-    const voices = synth.current.getVoices();
-    
-    if (voices.length === 0) {
-      const handler = () => {
-        const loadedVoices = synth.current.getVoices();
-        if (loadedVoices.length > 0) {
-          synth.current.onvoiceschanged = null;
-          selectAndSpeak(loadedVoices, utterance);
+    // If API key exists, try ElevenLabs first
+    if (apiKey) {
+      try {
+        // Random voice selection from your chosen voices
+        const voiceIds = {
+          'Lauren': '5pqNv7aZ9j2M4KUJsg2r',
+          'Gabriel': 'mF3jNrIHiCG0OsTXuid5',
+          'Mr Pete': 'VR6AewLTigWG4xSOukaG',
+          'Asher': 'EXAVITQu4vLHcDDjosKO',
+          'Joseph': 'Xb7hH8MSUJpSbVvn2iK5',
+          'Tiffany': 'EewDVsSQhLBvSrpE3lzV',
+          'Miranda': 'D38z5RcWu1voky8WS1d4',
+        };
+
+        const voiceNames = Object.keys(voiceIds);
+        const randomVoice = voiceNames[Math.floor(Math.random() * voiceNames.length)];
+        const voiceId = voiceIds[randomVoice];
+
+        const response = await fetch(
+          `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}?optimize_streaming_latency=0`,
+          {
+            method: 'POST',
+            headers: {
+              'xi-api-key': apiKey,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              text: text,
+              model_id: 'eleven_monolingual_v1',
+              voice_settings: {
+                stability: 0.5,
+                similarity_boost: 0.75,
+              },
+            }),
+          }
+        );
+
+        if (response.ok) {
+          const audioBuffer = await response.arrayBuffer();
+          const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          const decodedAudio = await audioContext.decodeAudioData(audioBuffer);
+          
+          const source = audioContext.createBufferSource();
+          source.buffer = decodedAudio;
+          source.connect(audioContext.destination);
+          source.start(0);
+          return; // Success - exit function
         }
-      };
-      synth.current.onvoiceschanged = handler;
-    } else {
-      selectAndSpeak(voices, utterance);
+      } catch (error) {
+        console.log('ElevenLabs error, falling back to browser voice:', error);
+      }
+    }
+
+    // Fallback to browser's Web Speech API
+    if (synth.current) {
+      synth.current.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = speed;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
+      const voices = synth.current.getVoices();
+      if (voices.length > 0) {
+        const googleVoice = voices.find(v => v.name.includes('Google US English')) ||
+                           voices.find(v => v.name.includes('Google UK English Female')) ||
+                           voices[0];
+        if (googleVoice) {
+          utterance.voice = googleVoice;
+        }
+      }
+      
+      synth.current.speak(utterance);
     }
   };
 
@@ -522,11 +558,17 @@ export default function PowerUp() {
       setTimeLeft(nextItem.duration);
       
       if (nextItem.type === 'transition') {
-        const breakPhrase = getRandomPhrase('breakStart');
-        speak(`${breakPhrase}`, 0.9); // Slower for breaks
+        // Only narrate longer breaks (30+ seconds)
+        if (nextItem.duration >= 30) {
+          const breakPhrase = getRandomPhrase('breakStart');
+          speak(`${breakPhrase}`, 0.9);
+        }
       } else if (nextItem.type === 'rest') {
-        const restPhrase = getRandomPhrase('restStart');
-        speak(`${restPhrase}`, 0.9); // Slower for rest periods
+        // Only narrate longer rest periods (30+ seconds)
+        if (nextItem.duration >= 30) {
+          const restPhrase = getRandomPhrase('restStart');
+          speak(`${restPhrase}`, 0.9);
+        }
       } else if (nextItem.type === 'exercise') {
         const exerciseName = exercises[nextItem.exercise].description;
         
@@ -547,19 +589,15 @@ export default function PowerUp() {
           setEstimatedSkips(skipsEst);
           
           if (isRepeat) {
-            // Repeat set with set number
-            speak(`Set ${setNumber} of ${exerciseName}! Try for the same number of skips or better!`, 1.0);
+            speak(`Set ${setNumber}! Go!`, 1.0);
           } else {
-            // First set of exercise
-            speak(`${exerciseName}! Go for at least ${skipsEst} skips!`, 1.0);
+            speak(`${exerciseName}! ${skipsEst} skips!`, 1.0);
           }
         } else {
           if (isRepeat) {
-            // Repeat set with set number
-            speak(`Set ${setNumber} of ${exerciseName}! Keep the same energy!`, 1.0);
+            speak(`Set ${setNumber}!`, 1.0);
           } else {
-            // First set of non-skipping exercise
-            speak(`${exerciseName}! Let's go!`, 1.0);
+            speak(`${exerciseName}!`, 1.0);
           }
         }
       }
@@ -802,7 +840,7 @@ export default function PowerUp() {
       <p style={{ color: colors.text, marginBottom: '0', fontSize: '0.9em', ...fontStyle, fontWeight: '500' }}>
         Exercise {currentIndex + 1} of {workoutPlan.length}
       </p>
-      </div>
+    </div>
     );
   }
 
