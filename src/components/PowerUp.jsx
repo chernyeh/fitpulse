@@ -70,6 +70,8 @@ export default function PowerUp() {
   const [skipGoal, setSkipGoal] = useState(null);
   const [showSkipGoalModal, setShowSkipGoalModal] = useState(false);
   const [skipInput, setSkipInput] = useState('');
+  const [showVoiceChoice, setShowVoiceChoice] = useState(false);
+  const [preferredVoice, setPreferredVoice] = useState(null);
   
   const [ageGroup, setAgeGroup] = useState('11-12');
   const [fitnessLevel, setFitnessLevel] = useState('intermediate');
@@ -203,19 +205,35 @@ export default function PowerUp() {
     if (synth.current) {
       synth.current.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.85;
-      utterance.pitch = 0.95;
+      utterance.rate = 0.9;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
       const voices = synth.current.getVoices();
+      let selectedVoice = null;
       
-      // Try to find Sophia from Studio first, then fallback to any female voice
-      let selectedVoice = voices.find(v => 
-        v.name.includes('Sophia') || 
-        v.name.includes('Google UK English Female') ||
-        v.name.includes('Victoria')
-      );
+      // If voice preference is set, use it
+      if (preferredVoice) {
+        if (preferredVoice === 'marcus') {
+          selectedVoice = voices.find(v => v.name.includes('Marcus'));
+        } else if (preferredVoice === 'james') {
+          selectedVoice = voices.find(v => v.name.includes('Neural2-A') || v.name.includes('James'));
+        } else if (preferredVoice === 'sophia') {
+          selectedVoice = voices.find(v => v.name.includes('Sophia'));
+        } else if (preferredVoice === 'aurora') {
+          selectedVoice = voices.find(v => v.name.includes('Aurora'));
+        } else if (preferredVoice === 'clara') {
+          selectedVoice = voices.find(v => v.name.includes('Clara'));
+        }
+      }
       
+      // Fallback if preferred voice not found
       if (!selectedVoice) {
-        selectedVoice = voices.find(v => v.name.includes('female') || v.name.includes('Female'));
+        selectedVoice = voices.find(v => 
+          v.name.includes('Sophia') ||
+          v.name.includes('Aurora') ||
+          v.name.includes('Google US English Female')
+        );
       }
       
       if (selectedVoice) utterance.voice = selectedVoice;
@@ -341,7 +359,7 @@ export default function PowerUp() {
     setStage('workout');
     setCountdown(5);
     setTimeLeft(45);
-    speak('Get ready! Starting in 5, 4, 3, 2, 1');
+    speak('Alright, let\'s do this! Starting in 5, 4, 3, 2, 1. Go go go!');
     setTimeout(() => {
       setIsRunning(true);
       setCountdown(0);
@@ -355,6 +373,119 @@ export default function PowerUp() {
     }, 5100);
   };
 
+  const funPhrases = {
+    breakStart: [
+      'Quick breather! You earned it.',
+      'Rest up, champ. You\'re doing great.',
+      'Catch your breath. No judgment here.',
+      'Take a moment. You deserve this.',
+      'Breathing break activated!',
+      'Recovery mode: engaged.',
+      'Time out! But not for long.',
+      'Pause screen - you\'re allowed!',
+    ],
+    restStart: [
+      'Time to recover like the champion you are.',
+      'Shake it out. You crushed that.',
+      'Nice work! Let those muscles chill.',
+      'Rest is part of the grind, friend.',
+      'Catch that breath. You\'re killing it.',
+      'That\'s a solid play! Well done.',
+      'You just scored big time!',
+      'Recovery time. You\'ve earned it.',
+      'Blimey, you\'re brilliant at this!',
+      'Cor! That was absolutely splendid!',
+    ],
+    nextExercise: [
+      'Ready for round two?',
+      'Here we go again!',
+      'Let\'s keep this train rolling.',
+      'You\'re on fire! Keep going.',
+      'One more time, let\'s goooo!',
+      'Same exercise, same energy!',
+      'Time for a replay!',
+      'Next round - you\'ve got this!',
+    ],
+    newExercise: [
+      'Time to switch it up!',
+      'New exercise, who dis?',
+      'Let\'s do this!',
+      'Fresh exercise energy incoming.',
+      'Ready for something new?',
+      'Change of pace, same intensity!',
+      'New level unlocked!',
+      'Plot twist incoming!',
+      'The adventure continues!',
+      'In the land of fitness, you are legend!',
+      'By Zeus! Time for the next challenge!',
+    ],
+    encouragement: [
+      'Come on, show this exercise who\'s boss.',
+      'You\'ve got this in the bag.',
+      'Let\'s make it happen!',
+      'Time to shine!',
+      'This is your moment.',
+      'Go get \'em!',
+      'That\'s the spirit!',
+      'Nice moves, legend!',
+      'You\'re unstoppable!',
+      'Victory awaits!',
+      'Score! Ace! You\'re crushing it!',
+      'Serve it up like a tennis pro!',
+      'You\'re in the zone now!',
+      'Not to be rude, but you\'re absolutely smashing it.',
+      'Hobbits can be surprisingly tough, and so can you.',
+      'The only thing we have to fear is running out of energy - and we won\'t!',
+      'It was the best of times, it was the best of workouts.',
+      'Carry on, you magnificent creature.',
+      'Everything is awesome when you\'re working out!',
+      'You\'ve got more power than a creeper explosion!',
+      'Brawl hard, rest harder!',
+      'Time to aim and fire like Colt!',
+      'You\'ve got the grit of Rosa!',
+      'Spin it to win it like Spike!',
+      'You\'re as quick as a Shelly dash!',
+      'Star power activated!',
+      'That\'s a super move right there!',
+      'You\'ve unlocked beast mode!',
+      'Percy Jackson would be proud of you!',
+      'This is your hero\'s journey!',
+      'You\'re building blocks of greatness!',
+      'Diamonds are made under pressure - you\'re becoming a diamond!',
+      'Gems don\'t collect themselves - you\'re earning them!',
+      'That\'s championship energy right there!',
+    ],
+    finished: [
+      'You absolute legend! That was incredible!',
+      'Done! You just crushed it like a pro!',
+      'That\'s a wrap! You were amazing!',
+      'Boom! Workout complete. You\'re unstoppable!',
+      'You did it! And you looked good doing it!',
+      'All done! You totally nailed that!',
+      'Champion! That was absolutely brilliant!',
+      'Stone the crows! You did that in style!',
+      'The odds were in your favor - and you won!',
+      'What a fantastical journey that was!',
+      'You\'ve completed your quest! Level up!',
+      'Checkmate, fitness! You won!',
+      'Served and won! Like Wimbledon!',
+      'That\'s one small step for you, one giant leap for fitness!',
+      'So long, and thanks for the awesome workout!',
+      'You\'ve earned your place in legend!',
+      'You brawled through that like a champion!',
+      'Victory royale! Workout edition!',
+      'You collected all the stars today!',
+      'That\'s a power play right there!',
+      'You dominated that match like a true brawler!',
+      'Gems earned, muscles burned - epic combo!',
+    ],
+  };
+
+  const getRandomPhrase = (category) => {
+    const phrases = funPhrases[category];
+    return phrases[Math.floor(Math.random() * phrases.length)];
+  };
+
   const moveToNextExercise = () => {
     if (currentIndex < workoutPlan.length - 1) {
       const nextIndex = currentIndex + 1;
@@ -363,22 +494,35 @@ export default function PowerUp() {
       setTimeLeft(nextItem.duration);
       
       if (nextItem.type === 'transition') {
-        speak(`Take a ${nextItem.duration} second break. Get ready for the next exercise.`);
+        const breakPhrase = getRandomPhrase('breakStart');
+        speak(`${breakPhrase} You have ${nextItem.duration} seconds.`);
       } else if (nextItem.type === 'rest') {
-        speak(`Time to rest. Take a ${nextItem.duration} second break. Catch your breath.`);
+        const restPhrase = getRandomPhrase('restStart');
+        speak(`${restPhrase} Take ${nextItem.duration} seconds.`);
       } else if (nextItem.type === 'exercise') {
         // Check if previous exercise was the same (to say "again")
         const previousExercise = currentIndex > 0 ? workoutPlan[currentIndex - 2]?.exercise : null;
         const isRepeat = previousExercise === nextItem.exercise;
         const exerciseName = exercises[nextItem.exercise].description;
-        const repString = isRepeat ? ' again' : '';
         
         if (nextItem.isSkipping) {
           const skipsEst = Math.round((nextItem.duration / 45) * 105);
           setEstimatedSkips(skipsEst);
-          speak(`Next, ${exerciseName}${repString}. Get ready. Aim for at least ${skipsEst} skips.`);
+          if (isRepeat) {
+            const repeatPhrase = getRandomPhrase('nextExercise');
+            speak(`${repeatPhrase} Skipping for ${nextItem.duration} seconds. Aim for ${skipsEst} skips.`);
+          } else {
+            const newPhrase = getRandomPhrase('newExercise');
+            speak(`${newPhrase} ${exerciseName} for ${nextItem.duration} seconds. Try for ${skipsEst} skips. ${getRandomPhrase('encouragement')}`);
+          }
         } else {
-          speak(`Next, ${exerciseName}${repString}. Get ready.`);
+          if (isRepeat) {
+            const repeatPhrase = getRandomPhrase('nextExercise');
+            speak(`${repeatPhrase} ${exerciseName} for ${nextItem.duration} seconds.`);
+          } else {
+            const newPhrase = getRandomPhrase('newExercise');
+            speak(`${newPhrase} ${exerciseName} for ${nextItem.duration} seconds. ${getRandomPhrase('encouragement')}`);
+          }
         }
       }
     } else {
@@ -394,7 +538,8 @@ export default function PowerUp() {
       
       setStage('results');
       setIsRunning(false);
-      speak('Amazing! You did it!');
+      const finishPhrase = getRandomPhrase('finished');
+      speak(finishPhrase);
     }
   };
 
@@ -422,7 +567,7 @@ export default function PowerUp() {
           {Object.entries(presets).map(([key, preset]) => {
             const dailyProgress = (skipStats.daily / preset.defaultSkipGoal) * 100;
             return (
-              <div key={key} onClick={() => { setSelectedPreset(key); setSelectedGoal(null); setSelectedExercises([]); setShowSkipGoalModal(true); setSkipInput(preset.defaultSkipGoal.toString()); }} style={{ padding: '20px', background: selectedPreset === key ? colors.primary : 'white', color: selectedPreset === key ? 'white' : colors.text, border: `2px solid ${selectedPreset === key ? colors.primary : colors.border}`, borderRadius: '12px', cursor: 'pointer', ...fontStyle, transition: 'all 0.3s ease' }}>
+              <div key={key} onClick={() => { setSelectedPreset(key); setSelectedGoal(null); setSelectedExercises([]); if (key === 'matt') { setShowVoiceChoice(true); } else { setShowSkipGoalModal(true); } setSkipInput(preset.defaultSkipGoal.toString()); }} style={{ padding: '20px', background: selectedPreset === key ? colors.primary : 'white', color: selectedPreset === key ? 'white' : colors.text, border: `2px solid ${selectedPreset === key ? colors.primary : colors.border}`, borderRadius: '12px', cursor: 'pointer', ...fontStyle, transition: 'all 0.3s ease' }}>
                 <div style={{ fontSize: '2em', marginBottom: '10px' }}>{preset.emoji}</div>
                 <div style={{ fontWeight: '600', fontSize: '1.1em', marginBottom: '6px' }}>{preset.name}</div>
                 <div style={{ fontSize: '0.95em', marginBottom: '8px', fontWeight: '500' }}>{preset.blurb}</div>
@@ -435,6 +580,44 @@ export default function PowerUp() {
             );
           })}
         </div>
+
+        {showVoiceChoice && (
+          <div style={{ position: 'fixed', top: '0', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+            <div style={{ background: 'white', padding: '40px', borderRadius: '12px', maxWidth: '480px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)', ...fontStyle }}>
+              <h3 style={{ color: colors.primary, marginBottom: '20px', fontSize: '1.4em', fontWeight: '600' }}>Choose Your Coach's Voice</h3>
+              <p style={{ color: colors.text, marginBottom: '30px', fontSize: '0.95em', fontWeight: '500' }}>Which voice would you like for your workout?</p>
+              
+              <div style={{ marginBottom: '25px' }}>
+                <p style={{ color: colors.text, marginBottom: '12px', fontWeight: '600', fontSize: '1em' }}>Male Voices:</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
+                  <button onClick={() => { setPreferredVoice('marcus'); setShowVoiceChoice(false); setShowSkipGoalModal(true); }} style={{ padding: '12px', background: preferredVoice === 'marcus' ? colors.primary : 'white', color: preferredVoice === 'marcus' ? 'white' : colors.text, border: `2px solid ${preferredVoice === 'marcus' ? colors.primary : colors.border}`, borderRadius: '8px', cursor: 'pointer', fontWeight: '600', ...fontStyle, fontSize: '0.95em', transition: 'all 0.2s ease' }}>
+                    Marcus (Journey)
+                  </button>
+                  <button onClick={() => { setPreferredVoice('james'); setShowVoiceChoice(false); setShowSkipGoalModal(true); }} style={{ padding: '12px', background: preferredVoice === 'james' ? colors.primary : 'white', color: preferredVoice === 'james' ? 'white' : colors.text, border: `2px solid ${preferredVoice === 'james' ? colors.primary : colors.border}`, borderRadius: '8px', cursor: 'pointer', fontWeight: '600', ...fontStyle, fontSize: '0.95em', transition: 'all 0.2s ease' }}>
+                    James (Neural 2)
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <p style={{ color: colors.text, marginBottom: '12px', fontWeight: '600', fontSize: '1em' }}>Female Voices:</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
+                  <button onClick={() => { setPreferredVoice('sophia'); setShowVoiceChoice(false); setShowSkipGoalModal(true); }} style={{ padding: '12px', background: preferredVoice === 'sophia' ? colors.primary : 'white', color: preferredVoice === 'sophia' ? 'white' : colors.text, border: `2px solid ${preferredVoice === 'sophia' ? colors.primary : colors.border}`, borderRadius: '8px', cursor: 'pointer', fontWeight: '600', ...fontStyle, fontSize: '0.9em', transition: 'all 0.2s ease' }}>
+                    Sophia
+                  </button>
+                  <button onClick={() => { setPreferredVoice('aurora'); setShowVoiceChoice(false); setShowSkipGoalModal(true); }} style={{ padding: '12px', background: preferredVoice === 'aurora' ? colors.primary : 'white', color: preferredVoice === 'aurora' ? 'white' : colors.text, border: `2px solid ${preferredVoice === 'aurora' ? colors.primary : colors.border}`, borderRadius: '8px', cursor: 'pointer', fontWeight: '600', ...fontStyle, fontSize: '0.9em', transition: 'all 0.2s ease' }}>
+                    Aurora
+                  </button>
+                  <button onClick={() => { setPreferredVoice('clara'); setShowVoiceChoice(false); setShowSkipGoalModal(true); }} style={{ padding: '12px', background: preferredVoice === 'clara' ? colors.primary : 'white', color: preferredVoice === 'clara' ? 'white' : colors.text, border: `2px solid ${preferredVoice === 'clara' ? colors.primary : colors.border}`, borderRadius: '8px', cursor: 'pointer', fontWeight: '600', ...fontStyle, fontSize: '0.9em', transition: 'all 0.2s ease' }}>
+                    Clara
+                  </button>
+                </div>
+              </div>
+              
+              <button onClick={() => { setShowVoiceChoice(false); setSelectedPreset(null); }} style={{ width: '100%', marginTop: '25px', padding: '12px', background: colors.border, color: colors.text, border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', ...fontStyle, fontSize: '0.95em' }}>Back</button>
+            </div>
+          </div>
+        )}
 
         {showSkipGoalModal && (
           <div style={{ position: 'fixed', top: '0', left: '0', right: '0', bottom: '0', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
