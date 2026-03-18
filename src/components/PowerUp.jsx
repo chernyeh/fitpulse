@@ -203,10 +203,21 @@ export default function PowerUp() {
     if (synth.current) {
       synth.current.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.9;
-      utterance.pitch = 1.0;
+      utterance.rate = 0.85;
+      utterance.pitch = 0.95;
       const voices = synth.current.getVoices();
-      let selectedVoice = voices.find(v => v.name.includes('female') || v.name.includes('Female'));
+      
+      // Try to find Sophia from Studio first, then fallback to any female voice
+      let selectedVoice = voices.find(v => 
+        v.name.includes('Sophia') || 
+        v.name.includes('Google UK English Female') ||
+        v.name.includes('Victoria')
+      );
+      
+      if (!selectedVoice) {
+        selectedVoice = voices.find(v => v.name.includes('female') || v.name.includes('Female'));
+      }
+      
       if (selectedVoice) utterance.voice = selectedVoice;
       synth.current.speak(utterance);
     }
@@ -351,10 +362,24 @@ export default function PowerUp() {
       const nextItem = workoutPlan[nextIndex];
       setTimeLeft(nextItem.duration);
       
-      if (nextItem.type === 'exercise' && nextItem.isSkipping) {
-        const skipsEst = Math.round((nextItem.duration / 45) * 105);
-        setEstimatedSkips(skipsEst);
-        speak(`Next: ${exercises[nextItem.exercise].description}`);
+      if (nextItem.type === 'transition') {
+        speak(`Take a ${nextItem.duration} second break. Get ready for the next exercise.`);
+      } else if (nextItem.type === 'rest') {
+        speak(`Time to rest. Take a ${nextItem.duration} second break. Catch your breath.`);
+      } else if (nextItem.type === 'exercise') {
+        // Check if previous exercise was the same (to say "again")
+        const previousExercise = currentIndex > 0 ? workoutPlan[currentIndex - 2]?.exercise : null;
+        const isRepeat = previousExercise === nextItem.exercise;
+        const exerciseName = exercises[nextItem.exercise].description;
+        const repString = isRepeat ? ' again' : '';
+        
+        if (nextItem.isSkipping) {
+          const skipsEst = Math.round((nextItem.duration / 45) * 105);
+          setEstimatedSkips(skipsEst);
+          speak(`Next, ${exerciseName}${repString}. Get ready. Aim for at least ${skipsEst} skips.`);
+        } else {
+          speak(`Next, ${exerciseName}${repString}. Get ready.`);
+        }
       }
     } else {
       if (skipGoal) {
