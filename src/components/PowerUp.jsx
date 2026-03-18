@@ -305,21 +305,24 @@ export default function PowerUp() {
       
       if (remainingSeconds > 60) {
         setDuration = 60;
+        remainingSeconds -= setDuration;
       } else {
-        // Round up remaining time to next 30 seconds
+        // Final set: round up remaining time to next 30 seconds
         setDuration = Math.ceil(remainingSeconds / 30) * 30;
+        remainingSeconds = 0; // We're done after this set
       }
       
       skippingSets.push({ exercise: 'skipping', duration: setDuration, type: 'exercise', set: skipSetCount, totalSets: skipSetCount, isSkipping: true, skipGoal: skipsForWorkout });
-      remainingSeconds -= setDuration;
     }
 
     // Add skipping sets to plan
     skippingSets.forEach((set, idx) => {
       plan.push(set);
       if (idx < skippingSets.length - 1) {
-        plan.push({ type: 'transition', duration: 15 });
-        usedTime += 15;
+        // Extra rest between 3rd and 4th skipping sets (30s instead of 15s)
+        const restDuration = (idx === 2 && skippingSets.length > 3) ? 30 : 15;
+        plan.push({ type: 'transition', duration: restDuration });
+        usedTime += restDuration;
       }
       usedTime += set.duration;
     });
@@ -335,17 +338,38 @@ export default function PowerUp() {
     for (const exercise of otherExercises) {
       const exerciseData = exercises[exercise];
       const isBalance = balanceExercises.includes(exercise);
+      const isPlank = exercise === 'plank';
       
-      // Calculate how many sets we can fit
+      // Base number of sets
       let exerciseSets = sets;
       let exerciseSetDuration = isBalance ? 90 : exerciseData.duration[fitnessLevel];
+      
+      // SMART SCALING: Add extra sets based on workout duration
+      // >= 30 min: +2 sets, >= 25 min: +1 set for eligible exercises
+      if (targetDuration >= 30 * 60) {
+        if (isBalance || isPlank) {
+          exerciseSets = sets + 2;
+        }
+      } else if (targetDuration >= 25 * 60) {
+        if (isBalance || isPlank) {
+          exerciseSets = sets + 1;
+        }
+      } else if (targetDuration >= 20 * 60) {
+        // Only balance board gets +1 at 20 min
+        if (isBalance) {
+          exerciseSets = sets + 1;
+        }
+      }
       
       // Estimate time for this exercise (sets + transitions + rest after)
       const estimatedExerciseTime = (exerciseSets * exerciseSetDuration) + ((exerciseSets - 1) * 15) + 45;
       
-      // If time is tight and this is balance, reduce sets
-      if (isBalance && estimatedExerciseTime > remainingTime) {
-        exerciseSets = Math.max(2, Math.floor(remainingTime / (exerciseSetDuration + 15)));
+      // If time is still tight, reduce sets intelligently
+      if (estimatedExerciseTime > remainingTime) {
+        // For balance/plank, try to keep at least 2 sets
+        // For other exercises, be more flexible
+        const minSets = (isBalance || isPlank) ? 2 : 1;
+        exerciseSets = Math.max(minSets, Math.floor(remainingTime / (exerciseSetDuration + 15)));
       }
       
       // Add exercise sets
@@ -361,7 +385,7 @@ export default function PowerUp() {
         }
       }
       
-      // Rest between different exercises
+      // Rest between different exercises (45 seconds)
       const exerciseIndex = otherExercises.indexOf(exercise);
       if (exerciseIndex < otherExercises.length - 1) {
         plan.push({ type: 'rest', duration: 45 });
@@ -462,36 +486,72 @@ export default function PowerUp() {
             {Object.entries(presets).map(([key, preset]) => {
               const dailyProgress = (skipStats.daily / preset.defaultSkipGoal) * 100;
               return (
-                <div key={key} onClick={() => {
-                  setSelectedPreset(key);
-                  setSelectedGoal(null);
-                  setSelectedExercises([]);
-                  setShowSkipGoalModal(true);
-                  setSkipInput(preset.defaultSkipGoal.toString());
-                }} style={{
-                  padding: '20px',
-                  background: selectedPreset === key ? colors.primary : 'white',
-                  color: selectedPreset === key ? 'white' : colors.text,
-                  border: `2px solid ${selectedPreset === key ? colors.primary : colors.border}`,
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontFamily: '"Lora", Georgia, serif',
-                  transition: 'all 0.3s ease',
-                }}>
-                  <div style={{ fontSize: '2em', marginBottom: '10px' }}>{preset.emoji}</div>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.1em', marginBottom: '8px' }}>{preset.name}</div>
-                  <div style={{ fontSize: '0.9em', opacity: 0.9, marginBottom: '10px' }}>{preset.description}</div>
-                  <div style={{ fontSize: '0.85em', opacity: 0.8 }}>
-                    Skips Today: {skipStats.daily}/{preset.defaultSkipGoal}
+                <div key={key}>
+                  <div onClick={() => {
+                    setSelectedPreset(key);
+                    setSelectedGoal(null);
+                    setSelectedExercises([]);
+                    setShowSkipGoalModal(true);
+                    setSkipInput(preset.defaultSkipGoal.toString());
+                  }} style={{
+                    padding: '20px',
+                    background: selectedPreset === key ? colors.primary : 'white',
+                    color: selectedPreset === key ? 'white' : colors.text,
+                    border: `2px solid ${selectedPreset === key ? colors.primary : colors.border}`,
+                    borderRadius: '8px 8px 0 0',
+                    cursor: 'pointer',
+                    fontFamily: '"Lora", Georgia, serif',
+                    transition: 'all 0.3s ease',
+                  }}>
+                    <div style={{ fontSize: '2em', marginBottom: '10px' }}>{preset.emoji}</div>
+                    <div style={{ fontWeight: 'bold', fontSize: '1.1em', marginBottom: '8px' }}>{preset.name}</div>
+                    <div style={{ fontSize: '0.9em', opacity: 0.9, marginBottom: '10px' }}>{preset.description}</div>
+                    <div style={{ fontSize: '0.85em', opacity: 0.8 }}>
+                      Skips Today: {skipStats.daily}/{preset.defaultSkipGoal}
+                    </div>
+                    <div style={{ background: colors.border, height: '8px', borderRadius: '4px', marginTop: '8px', overflow: 'hidden' }}>
+                      <div style={{
+                        background: selectedPreset === key ? 'white' : colors.primary,
+                        height: '100%',
+                        width: `${Math.min(dailyProgress, 100)}%`,
+                        transition: 'width 0.3s ease',
+                      }} />
+                    </div>
                   </div>
-                  <div style={{ background: colors.border, height: '8px', borderRadius: '4px', marginTop: '8px', overflow: 'hidden' }}>
+                  
+                  {selectedPreset === key && (
                     <div style={{
-                      background: selectedPreset === key ? 'white' : colors.primary,
-                      height: '100%',
-                      width: `${Math.min(dailyProgress, 100)}%`,
-                      transition: 'width 0.3s ease',
-                    }} />
-                  </div>
+                      padding: '20px',
+                      background: colors.light,
+                      border: `2px solid ${colors.primary}`,
+                      borderRadius: '0 0 8px 8px',
+                      borderTop: 'none',
+                      fontFamily: '"Lora", Georgia, serif',
+                    }}>
+                      <p style={{ color: colors.text, marginBottom: '15px', fontSize: '0.95em', fontWeight: 'bold' }}>Workout Duration:</p>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '10px' }}>
+                        {[15, 20, 25, 30, 35].map(mins => (
+                          <button
+                            key={mins}
+                            onClick={() => setDuration(mins)}
+                            style={{
+                              padding: '12px',
+                              background: duration === mins && selectedPreset === key ? colors.primary : 'white',
+                              color: duration === mins && selectedPreset === key ? 'white' : colors.text,
+                              border: `2px solid ${duration === mins && selectedPreset === key ? colors.primary : colors.border}`,
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontWeight: duration === mins && selectedPreset === key ? 'bold' : 'normal',
+                              fontFamily: '"Lora", Georgia, serif',
+                              fontSize: '0.9em',
+                            }}
+                          >
+                            {mins}m
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -619,8 +679,28 @@ export default function PowerUp() {
               </select>
             </div>
             <div>
-              <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: colors.text, fontSize: '0.95em' }}>Duration: {duration} min</label>
-              <input type="range" min="5" max="60" value={duration} onChange={(e) => setDuration(Number(e.target.value))} style={{ width: '100%', cursor: 'pointer' }} />
+              <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold', color: colors.text, fontSize: '0.95em' }}>Duration</label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+                {[15, 20, 25, 30, 35].map(mins => (
+                  <button
+                    key={mins}
+                    onClick={() => setDuration(mins)}
+                    style={{
+                      padding: '10px',
+                      background: duration === mins ? colors.primary : 'white',
+                      color: duration === mins ? 'white' : colors.text,
+                      border: `2px solid ${duration === mins ? colors.primary : colors.border}`,
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontWeight: duration === mins ? 'bold' : 'normal',
+                      fontFamily: '"Lora", Georgia, serif',
+                      fontSize: '0.85em',
+                    }}
+                  >
+                    {mins}m
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
