@@ -388,18 +388,23 @@ export default function PowerUp() {
     setTimeLeft(45);
     setIsRunning(true);
     
-    // Announce with small delay for voice to load
+    // 1-second pause before countdown, announce first
     speak('Get ready!');
-    setTimeout(() => speak('5'), 1200);
-    setTimeout(() => speak('4'), 2200);
-    setTimeout(() => speak('3'), 3200);
-    setTimeout(() => speak('2'), 4200);
-    setTimeout(() => speak('1'), 5200);
-    setTimeout(() => speak('Go!'), 6200);
     
-    // Start the actual workout - countdown will decrement from 5 on display side
+    // Countdown starts after 1 second (giving user time to hear "Get ready!")
     setTimeout(() => {
-      setCountdown(0);
+      setCountdown(4); // Start countdown from 4 (we said "5" in Get ready)
+      speak('5');
+    }, 1300);
+    
+    setTimeout(() => { setCountdown(3); speak('4'); }, 2300);
+    setTimeout(() => { setCountdown(2); speak('3'); }, 3300);
+    setTimeout(() => { setCountdown(1); speak('2'); }, 4300);
+    setTimeout(() => { setCountdown(0); speak('1'); }, 5300);
+    setTimeout(() => speak('Go!'), 6300);
+    
+    // Start the actual workout
+    setTimeout(() => {
       const firstExercise = workoutPlan[0];
       setTimeLeft(firstExercise.duration);
       
@@ -408,15 +413,17 @@ export default function PowerUp() {
         setEstimatedSkips(skipsEst);
       }
       
-      // Announce the first exercise
-      const exerciseName = exercises[firstExercise.exercise].description;
-      if (firstExercise.isSkipping) {
-        const skipsEst = Math.round((firstExercise.duration / 45) * 105);
-        speak(`${exerciseName} for ${firstExercise.duration} seconds. Try for ${skipsEst} skips.`);
-      } else {
-        speak(`${exerciseName} for ${firstExercise.duration} seconds.`);
-      }
-    }, 7000);
+      // Announce the first exercise with a slight delay after "Go!"
+      setTimeout(() => {
+        const exerciseName = exercises[firstExercise.exercise].description;
+        if (firstExercise.isSkipping) {
+          const skipsEst = Math.round((firstExercise.duration / 45) * 105);
+          speak(`${exerciseName}. Try for ${skipsEst} skips.`);
+        } else {
+          speak(`${exerciseName}. Let's go.`);
+        }
+      }, 800);
+    }, 6800);
   };
 
   const funPhrases = {
@@ -541,12 +548,11 @@ export default function PowerUp() {
       
       if (nextItem.type === 'transition') {
         const breakPhrase = getRandomPhrase('breakStart');
-        speak(`${breakPhrase} You have ${nextItem.duration} seconds.`);
+        speak(`${breakPhrase} ${nextItem.duration} seconds.`);
       } else if (nextItem.type === 'rest') {
         const restPhrase = getRandomPhrase('restStart');
-        speak(`${restPhrase} Take ${nextItem.duration} seconds.`);
+        speak(`${restPhrase} ${nextItem.duration} seconds.`);
       } else if (nextItem.type === 'exercise') {
-        // Check if previous exercise was the same (to say "again")
         const previousExercise = currentIndex > 0 ? workoutPlan[currentIndex - 2]?.exercise : null;
         const isRepeat = previousExercise === nextItem.exercise;
         const exerciseName = exercises[nextItem.exercise].description;
@@ -555,19 +561,15 @@ export default function PowerUp() {
           const skipsEst = Math.round((nextItem.duration / 45) * 105);
           setEstimatedSkips(skipsEst);
           if (isRepeat) {
-            const repeatPhrase = getRandomPhrase('nextExercise');
-            speak(`${repeatPhrase} Skipping for ${nextItem.duration} seconds. Aim for ${skipsEst} skips.`);
+            speak(`${exerciseName} again. Aim for ${skipsEst} skips.`);
           } else {
-            const newPhrase = getRandomPhrase('newExercise');
-            speak(`${newPhrase} ${exerciseName} for ${nextItem.duration} seconds. Try for ${skipsEst} skips. ${getRandomPhrase('encouragement')}`);
+            speak(`${exerciseName}. Try for ${skipsEst} skips.`);
           }
         } else {
           if (isRepeat) {
-            const repeatPhrase = getRandomPhrase('nextExercise');
-            speak(`${repeatPhrase} ${exerciseName} for ${nextItem.duration} seconds.`);
+            speak(`${exerciseName} again.`);
           } else {
-            const newPhrase = getRandomPhrase('newExercise');
-            speak(`${newPhrase} ${exerciseName} for ${nextItem.duration} seconds. ${getRandomPhrase('encouragement')}`);
+            speak(`${exerciseName}. Let's go.`);
           }
         }
       }
